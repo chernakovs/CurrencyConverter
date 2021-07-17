@@ -5,19 +5,24 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.currencyconverter.Screen
+import com.example.currencyconverter.converter.CurrencyConverterViewModel
 
 @Composable
 fun ConverterScreen(
-    navController : NavController
+    navController : NavController,
+    viewModel : CurrencyConverterViewModel
 ) {
+
+    val currency = viewModel.currency.collectAsState()
 
     Scaffold(
         topBar = { ConverterTopBar(navController = navController) },
-        content = { ConverterContent() }
+        content = { ConverterContent(currency.value) }
     )
 
 }
@@ -52,6 +57,8 @@ fun NavigationIconButton(
 }
 
 @Composable
-fun ConverterContent() {
-
+fun ConverterContent(
+    currency : String
+) {
+    Text(text = currency)
 }

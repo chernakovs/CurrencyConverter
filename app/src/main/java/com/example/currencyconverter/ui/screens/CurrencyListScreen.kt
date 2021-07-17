@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.currencyconverter.Screen
 import com.example.currencyconverter.currencies.CurrencyListViewModel
 import com.example.currencyconverter.data.Currency
 
@@ -34,7 +35,8 @@ fun CurrencyListScreen(
         content = {
             CurrencyListContent(
                 currenciesList.value,
-                networkError.value
+                networkError.value,
+                navController
             )
         }
     )
@@ -54,16 +56,17 @@ fun CurrencyListTopBar() {
 @Composable
 fun CurrencyListContent(
     currenciesList : List<Currency>,
-    networkError: Boolean
-) {
+    networkError: Boolean,
+    navController : NavController,
+    ) {
     if (networkError) {
         if (currenciesList.isNullOrEmpty()) {
             Text(text = "NETWORK ERROR")
         } else {
-            CurrencyList(currenciesList)
+            CurrencyList(currenciesList, navController)
         }
     } else {
-        CurrencyList(currenciesList)
+        CurrencyList(currenciesList, navController)
     }
 }
 
@@ -71,7 +74,8 @@ fun CurrencyListContent(
 @ExperimentalMaterialApi
 @Composable
 fun CurrencyList(
-    currenciesList : List<Currency>
+    currenciesList : List<Currency>,
+    navController : NavController,
 ) {
 
     val listState = rememberLazyListState()
@@ -84,7 +88,7 @@ fun CurrencyList(
             .fillMaxSize()
     ) {
         items(currenciesList) { currency ->
-            CurrencyCard(currency = currency)
+            CurrencyCard(currency = currency, navController)
         }
     }
 }
@@ -92,11 +96,14 @@ fun CurrencyList(
 @ExperimentalMaterialApi
 @Composable
 fun CurrencyCard(
-    currency : Currency
+    currency : Currency,
+    navController : NavController,
 ) {
 
     Card(
-        onClick = {}
+        onClick = {
+            navController.navigate(Screen.Converter.createRoute(currency.acronym))
+        }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

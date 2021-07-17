@@ -50,7 +50,9 @@ class MainActivity : ComponentActivity() {
 
 sealed class Screen(val route: String) {
     object CurrencyList: Screen("currencyList")
-    object Converter: Screen("converter")
+    object Converter: Screen("{currencyAcronym}/converter") {
+        fun createRoute(currencyAcronym: String) = "$currencyAcronym/converter"
+    }
 }
 
 @ExperimentalMaterialApi
@@ -67,10 +69,14 @@ fun CurrencyConverterApp(
                 viewModel(factory = CurrencyListViewModelFactory(dataSource))
             )
         }
-        composable(route = Screen.Converter.route) {
+        composable(route = Screen.Converter.route) { backStackEntry ->
+            val currencyAcronym = backStackEntry.arguments?.getString("currencyAcronym")
+            requireNotNull(currencyAcronym) { "currencyAcronym not found" }
             ConverterScreen(
                 navController,
-                viewModel(factory = CurrencyConverterViewModelFactory())
+                viewModel(factory = CurrencyConverterViewModelFactory(dataSource = dataSource,
+                    currencyAcronym = currencyAcronym
+                ))
             )
         }
     }
