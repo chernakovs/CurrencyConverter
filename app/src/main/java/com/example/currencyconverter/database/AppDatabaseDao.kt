@@ -8,6 +8,7 @@ import com.example.currencyconverter.database.entities.DatabaseCurrency
 import com.example.currencyconverter.database.entities.DatabaseCurrencyPair
 import com.example.currencyconverter.database.entities.DatabaseCurrencyPairAndRate
 import com.example.currencyconverter.database.entities.DatabaseRate
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AppDatabaseDao {
@@ -25,7 +26,8 @@ interface AppDatabaseDao {
     suspend fun insertCurrencies(currencies : List<DatabaseCurrency>)
 
     @Query("SELECT * FROM currency_table")
-    suspend fun getAllCurrencies() : List<DatabaseCurrency>
+//    suspend fun getAllCurrencies() : List<DatabaseCurrency>
+     fun getAllCurrencies() : Flow<List<DatabaseCurrency>>
 
 
 
