@@ -3,6 +3,7 @@ package com.example.currencyconverter
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -24,6 +25,7 @@ import com.example.currencyconverter.ui.theme.CurrencyConverterTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class MainActivity : ComponentActivity() {
+    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
 
         val application = requireNotNull(this).application
@@ -51,6 +53,7 @@ sealed class Screen(val route: String) {
     object Converter: Screen("converter")
 }
 
+@ExperimentalMaterialApi
 @Composable
 fun CurrencyConverterApp(
     dataSource : AppDatabaseDao
