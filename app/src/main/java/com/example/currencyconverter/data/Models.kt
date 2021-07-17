@@ -1,17 +1,17 @@
 package com.example.currencyconverter.data
 
 data class Currency(
-    val acronym : String,
-    val title : String
+    val acronym : String, // USD
+    val title : String // United States dollar
 )
 
 data class Rate(
-    val currency: Currency,
-    val cost: Double,
+    val currencyAcronym : String,
+    val cost : Double,
 )
 
 data class CurrencyRate(
-    val baseCurrency: Currency,
+    val baseCurrencyAcronym : String,
     val date : String,
     val currenciesRateList : List<Rate>
 )
