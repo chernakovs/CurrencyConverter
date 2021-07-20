@@ -37,6 +37,9 @@ interface AppDatabaseDao {
     @Query("SELECT * FROM currency_pair WHERE id = :id")
     suspend fun getCurrencyPairById(id : Long) : DatabaseCurrencyPair
 
+    @Query("SELECT * FROM currency_pair WHERE base_currency = :baseCurrencyAcronym AND currency = :currencyAcronym")
+    suspend fun getCurrencyPairByAcronyms(baseCurrencyAcronym : String, currencyAcronym : String) : DatabaseCurrencyPair
+
 
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -57,6 +60,7 @@ interface AppDatabaseDao {
             "AND currency_rate.date = (" +
                 "SELECT MAX(date) FROM currency_rate)"
     )
-    suspend fun getLatestRatesByBaseCurrencyAcronym(acronym : String) : List<DatabaseCurrencyPairAndRate>
+//    suspend fun getLatestRatesByBaseCurrencyAcronym(acronym : String) : List<DatabaseCurrencyPairAndRate>
+    fun getLatestRatesByBaseCurrencyAcronym(acronym : String) : Flow<List<DatabaseCurrencyPairAndRate>>
 
 }

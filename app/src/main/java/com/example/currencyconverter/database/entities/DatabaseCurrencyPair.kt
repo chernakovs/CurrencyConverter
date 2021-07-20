@@ -4,7 +4,7 @@ import androidx.room.*
 
 @Entity(
     tableName = "currency_pair",
-//    primaryKeys = ["base_currency", "currency"]
+    indices = [Index(value = ["base_currency", "currency"], unique = true)],
     foreignKeys = [
         ForeignKey(
             entity = DatabaseCurrency::class,

@@ -1,12 +1,10 @@
 package com.example.currencyconverter.database.entities
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 @Entity(
     tableName = "currency_rate",
+    indices = [Index(value = ["currency_pair_id", "date"], unique = true)],
     foreignKeys = [
         ForeignKey(
             entity = DatabaseCurrencyPair::class,
