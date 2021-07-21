@@ -37,7 +37,7 @@ class CurrencyConverterViewModel(
 
     private val totalValue = MutableStateFlow(1.0)
 
-    private val _valueString = MutableStateFlow(totalValue.toString())
+    private val _valueString = MutableStateFlow(totalValue.value.toString())
     val valueString : StateFlow<String>
         get() = _valueString
 

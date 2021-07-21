@@ -58,7 +58,9 @@ interface AppDatabaseDao {
             "WHERE currency_pair.base_currency = :acronym " +
             "AND currency_pair.id = currency_rate.currency_pair_id " +
             "AND currency_rate.date = (" +
-                "SELECT MAX(date) FROM currency_rate)"
+                "SELECT MAX(date) FROM currency_rate, currency_pair " +
+                "WHERE currency_pair.id = currency_rate.currency_pair_id " +
+                "AND currency_pair.base_currency = :acronym)"
     )
 //    suspend fun getLatestRatesByBaseCurrencyAcronym(acronym : String) : List<DatabaseCurrencyPairAndRate>
     fun getLatestRatesByBaseCurrencyAcronym(acronym : String) : Flow<List<DatabaseCurrencyPairAndRate>>
