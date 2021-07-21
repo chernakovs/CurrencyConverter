@@ -1,25 +1,41 @@
 package com.example.currencyconverter.ui.screens
 
+import android.util.Log
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.currencyconverter.Screen
 import com.example.currencyconverter.currencies.CurrencyListViewModel
 import com.example.currencyconverter.data.Currency
 
+@ExperimentalComposeUiApi
 @ExperimentalMaterialApi
 @Composable
 fun CurrencyListScreen(
@@ -28,6 +44,8 @@ fun CurrencyListScreen(
 ) {
 
     val currenciesList = viewModel.currencies.collectAsState(initial = listOf())
+    val searchQuery = viewModel.searchQuery.collectAsState()
+    val setSearchQuery = viewModel::setSearchQuery
     val networkError = viewModel.networkError.collectAsState()
 
     Scaffold(
@@ -36,6 +54,8 @@ fun CurrencyListScreen(
             CurrencyListContent(
                 currenciesList.value,
                 networkError.value,
+                searchQuery.value,
+                setSearchQuery,
                 navController
             )
         }
@@ -52,21 +72,29 @@ fun CurrencyListTopBar() {
     )
 }
 
+@ExperimentalComposeUiApi
 @ExperimentalMaterialApi
 @Composable
 fun CurrencyListContent(
     currenciesList : List<Currency>,
     networkError: Boolean,
+    searchQuery: String,
+    setSearchQuery: (String) -> Unit,
     navController : NavController,
     ) {
-    if (networkError) {
-        if (currenciesList.isNullOrEmpty()) {
-            Text(text = "NETWORK ERROR")
+    Column {
+
+        SearchRow(searchQuery = searchQuery, setSearchQuery = setSearchQuery)
+
+        if (networkError) {
+            if (currenciesList.isNullOrEmpty()) {
+                Text(text = "NETWORK ERROR")
+            } else {
+                CurrencyList(currenciesList, navController)
+            }
         } else {
             CurrencyList(currenciesList, navController)
         }
-    } else {
-        CurrencyList(currenciesList, navController)
     }
 }
 
@@ -137,4 +165,59 @@ fun CurrencyCard(
         }
     }
 
+}
+
+
+@ExperimentalComposeUiApi
+@Composable
+fun SearchRow(
+    searchQuery : String,
+    setSearchQuery : (String) -> Unit
+) {
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
+    TextField(
+        value = searchQuery,
+        onValueChange = { setSearchQuery(it) },
+        leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = "search") },
+        trailingIcon = {
+            IconButton(
+                onClick = { setSearchQuery("") }) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "search",
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+        },
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.White,
+            cursorColor = Color.Black,
+            focusedIndicatorColor = Color.White,
+            unfocusedIndicatorColor = Color.White,
+            disabledIndicatorColor = Color.White,
+            errorIndicatorColor = Color.White,
+            focusedLabelColor = MaterialTheme.colors.onSurface.copy(ContentAlpha.medium),
+            unfocusedLabelColor = MaterialTheme.colors.onSurface.copy(ContentAlpha.medium),
+        ),
+        shape = RoundedCornerShape(24.dp),
+        maxLines = 2,
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Search,
+            capitalization = KeyboardCapitalization.Sentences,
+            keyboardType = KeyboardType.Text
+        ),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                focusManager.clearFocus()
+                keyboardController?.hide()
+            }
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)
+            .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(24.dp))
+    )
 }

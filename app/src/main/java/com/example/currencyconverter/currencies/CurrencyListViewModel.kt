@@ -10,6 +10,7 @@ import com.example.currencyconverter.network.asNetworkData
 import com.example.currencyconverter.repository.CurrencyRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import okio.IOException
 import retrofit2.Call
@@ -20,12 +21,18 @@ class CurrencyListViewModel(val database : AppDatabaseDao) : ViewModel() {
 
     private val repository = CurrencyRepository(database)
 
-    val currencies = repository.currencies
 
     private val _networkError = MutableStateFlow(false)
     val networkError : StateFlow<Boolean>
         get() = _networkError
 
+
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery : StateFlow<String>
+        get() = _searchQuery
+
+    val currencies = repository.currencies
+        .combine(searchQuery) { rates, query -> rates.filter { it.acronym.contains(query, true) || it.title.contains(query, true) } }
 
     init {
         refreshDataFromRepository()
@@ -39,6 +46,10 @@ class CurrencyListViewModel(val database : AppDatabaseDao) : ViewModel() {
                 _networkError.value = true
             }
         }
+    }
+
+    fun setSearchQuery(query : String) {
+        _searchQuery.value = query
     }
 
 }
