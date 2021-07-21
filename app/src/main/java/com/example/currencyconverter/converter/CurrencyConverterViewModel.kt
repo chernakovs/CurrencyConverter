@@ -24,6 +24,7 @@ class CurrencyConverterViewModel(
     private val validator = ValueInputValidator()
 
 
+
     private val _networkError = MutableStateFlow(false)
     val networkError : StateFlow<Boolean>
         get() = _networkError
@@ -34,12 +35,14 @@ class CurrencyConverterViewModel(
 
 
 
-    private val _value = MutableStateFlow(1.0)
-    val value : StateFlow<Double>
-        get() = _value
+    private val totalValue = MutableStateFlow(1.0)
+
+    private val _valueString = MutableStateFlow(totalValue.toString())
+    val valueString : StateFlow<String>
+        get() = _valueString
 
     val rates = repository.rates
-        .combine(value) { rates, value -> rates.onEach { it.totalValue = it.cost * value } }
+        .combine(totalValue) { rates, value -> rates.onEach { it.totalValue = it.cost * value } }
 
     init {
         refreshDataFromRepository()
@@ -58,11 +61,12 @@ class CurrencyConverterViewModel(
     fun setValue(value : String) {
         if (validator.validate(value)) {
             _valueInputError.value = false
-            _value.value = value.toDouble()
+            _valueString.value = value
+            totalValue.value = value.toDouble()
         }
         else {
             _valueInputError.value = true
-            _value.value = 0.0
+            _valueString.value = value
         }
     }
 
