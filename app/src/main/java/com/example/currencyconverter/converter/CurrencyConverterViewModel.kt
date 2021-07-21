@@ -41,7 +41,13 @@ class CurrencyConverterViewModel(
     val valueString : StateFlow<String>
         get() = _valueString
 
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery : StateFlow<String>
+        get() = _searchQuery
+
+
     val rates = repository.rates
+        .combine(searchQuery) { rates, query -> rates.filter { it.currencyAcronym.contains(query, true) /**|| it.title.contains(query, true)**/ } }
         .combine(totalValue) { rates, value -> rates.onEach { it.totalValue = it.cost * value } }
 
     init {
@@ -68,6 +74,10 @@ class CurrencyConverterViewModel(
             _valueInputError.value = true
             _valueString.value = value
         }
+    }
+
+    fun setSearchQuery(query : String) {
+        _searchQuery.value = query
     }
 
 }

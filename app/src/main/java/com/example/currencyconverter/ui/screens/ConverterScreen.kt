@@ -14,8 +14,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -27,6 +30,7 @@ import com.example.currencyconverter.Screen
 import com.example.currencyconverter.converter.CurrencyConverterViewModel
 import com.example.currencyconverter.data.CurrencyRates
 
+@ExperimentalComposeUiApi
 @Composable
 fun ConverterScreen(
     navController : NavController,
@@ -38,6 +42,8 @@ fun ConverterScreen(
     val inputError = viewModel.valueInputError.collectAsState()
     val value = viewModel.valueString.collectAsState()
     val setValue = viewModel::setValue
+    val searchQuery = viewModel.searchQuery.collectAsState()
+    val setSearchQuery = viewModel::setSearchQuery
 
     Scaffold(
         topBar = { ConverterTopBar(navController = navController) },
@@ -47,7 +53,9 @@ fun ConverterScreen(
                 networkError.value,
                 inputError.value,
                 value.value,
-                setValue
+                setValue,
+                searchQuery.value,
+                setSearchQuery
             )
         }
     )
@@ -83,19 +91,22 @@ fun NavigationIconButton(
     }
 }
 
+@ExperimentalComposeUiApi
 @Composable
 fun ConverterContent(
     rates : List<CurrencyRates>,
     networkError : Boolean,
     inputError : Boolean,
     value : String,
-    setValue : (String) -> Unit
+    setValue : (String) -> Unit,
+    searchQuery: String,
+    setSearchQuery: (String) -> Unit
 ) {
     Column() {
 
         if (!rates.isNullOrEmpty()) {
 
-            BaseCurrencyCard(rates[0].baseCurrencyAcronym, rates[0].date, value, inputError, setValue)
+            BaseCurrencyCard(rates[0].baseCurrencyAcronym, rates[0].date, value, inputError, setValue, searchQuery, setSearchQuery)
 
             if (networkError) {
                 if (rates.isNullOrEmpty()) {
@@ -172,18 +183,20 @@ fun CurrencyRateCard(
 }
 
 
+@ExperimentalComposeUiApi
 @Composable
 fun BaseCurrencyCard(
     baseCurrencyAcronym : String,
     date : String,
     value : String,
     inputError : Boolean,
-    setValue : (String) -> Unit
+    setValue : (String) -> Unit,
+    searchQuery : String,
+    setSearchQuery : (String) -> Unit
 ) {
 
-//    val value = remember () {
-//        mutableStateOf(value)
-//    }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
 
 
     Card(
@@ -203,7 +216,7 @@ fun BaseCurrencyCard(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Currency rates by $date",
+                    text = "Rates by $date",
                     fontSize = 10.sp,
                     modifier = Modifier
                         .padding(top = 8.dp, start = 16.dp)
@@ -238,7 +251,7 @@ fun BaseCurrencyCard(
                         .padding(16.dp)
                 ) {
                     OutlinedTextField(
-                        value = value.toString(),
+                        value = value,
                         onValueChange = { setValue(it) },
                         isError = inputError,
                         label = { Text(text = "VALUE")},
@@ -247,25 +260,18 @@ fun BaseCurrencyCard(
                             capitalization = KeyboardCapitalization.Sentences,
                             keyboardType = KeyboardType.Number
                         ),
-//                        colors = TextFieldDefaults.textFieldColors(
-//                            backgroundColor = Color.White,
-//                            cursorColor = Color.Black,
-//                            focusedIndicatorColor = Color.White,
-//                            unfocusedIndicatorColor = Color.White,
-//                            disabledIndicatorColor = Color.White,
-//                            errorIndicatorColor = Color.White,
-//                            focusedLabelColor = MaterialTheme.colors.onSurface.copy(ContentAlpha.medium),
-//                            unfocusedLabelColor = MaterialTheme.colors.onSurface.copy(ContentAlpha.medium),
-//                        ),
                         keyboardActions = KeyboardActions(
                             onDone = {
-//                                focusManager.clearFocus()
-//                                keyboardController?.hide()
+                                focusManager.clearFocus()
+                                keyboardController?.hide()
                             }
                         ),
                     )
                 }
             }
+
+            SearchRow(searchQuery = searchQuery, setSearchQuery = setSearchQuery)
+
         }
 
     }
