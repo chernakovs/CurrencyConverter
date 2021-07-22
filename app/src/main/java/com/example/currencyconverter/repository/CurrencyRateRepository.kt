@@ -35,7 +35,7 @@ class CurrencyRateRepository(
 
             newCurrencyRates.rates.map {
 
-                if (database.getCurrencyByAcronym(it.currency) != null) {
+                if (database.getCurrencyByAcronym(it.currency) != null) { /** bug in API: not all currencies are represented in the /latest/currencies.json response**/
 
                     var pairId = database.insertCurrencyPair(
                         DatabaseCurrencyPair(

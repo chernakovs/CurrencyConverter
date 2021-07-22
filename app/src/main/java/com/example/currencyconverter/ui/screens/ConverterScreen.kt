@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -18,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.HorizontalAlignmentLine
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
@@ -185,12 +187,12 @@ fun CurrencyRateCard(
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
+                horizontalArrangement = Arrangement.End,
                 modifier = Modifier
                     .wrapContentWidth(Alignment.End)
                     .fillMaxWidth()
             ) {
-                Text(text = rate.totalValue.toString())
+                Text(text = rate.totalValue.toString(), modifier = Modifier.padding(end = 8.dp))
             }
         }
 
@@ -271,6 +273,7 @@ fun BaseCurrencyCard(
                         onValueChange = { setValue(it) },
                         isError = inputError,
                         label = { Text(text = "VALUE")},
+                        shape = RoundedCornerShape(24.dp),
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Done,
                             capitalization = KeyboardCapitalization.Sentences,
@@ -285,11 +288,6 @@ fun BaseCurrencyCard(
                     )
                 }
             }
-
-//            SearchRow(searchQuery = searchQuery, setSearchQuery = setSearchQuery)
-
         }
-
     }
-
 }

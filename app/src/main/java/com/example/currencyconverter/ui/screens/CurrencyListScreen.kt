@@ -101,7 +101,6 @@ fun CurrencyListContent(
         } else {
             CurrencyList(currenciesList, navController)
         }
-
     }
 }
 

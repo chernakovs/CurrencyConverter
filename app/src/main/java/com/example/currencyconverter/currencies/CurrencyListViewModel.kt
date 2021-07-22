@@ -26,13 +26,14 @@ class CurrencyListViewModel(val database : AppDatabaseDao) : ViewModel() {
     val networkError : StateFlow<Boolean>
         get() = _networkError
 
-
     private val _searchQuery = MutableStateFlow("")
     val searchQuery : StateFlow<String>
         get() = _searchQuery
 
+
     val currencies = repository.currencies
         .combine(searchQuery) { rates, query -> rates.filter { it.acronym.contains(query, true) || it.title.contains(query, true) } }
+
 
     init {
         refreshDataFromRepository()

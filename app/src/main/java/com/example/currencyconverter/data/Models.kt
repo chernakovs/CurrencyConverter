@@ -5,20 +5,7 @@ data class Currency(
     val title : String // United States dollar
 )
 
-//data class Rate(
-//    val currencyAcronym : String,
-//    val cost : Double,
-//)
-//
-//data class CurrencyRate(
-//    val baseCurrencyAcronym : String,
-//    val date : String,
-//    val currenciesRateList : List<Rate>
-//)
-
 data class CurrencyRates(
-//    val baseCurrencyAcronym: String,
-//    val date: String,
     val currencyAcronym : String,
     val cost : Double,
     var totalValue : Double = cost

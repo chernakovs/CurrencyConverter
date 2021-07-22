@@ -20,7 +20,6 @@ class CurrencyConverterViewModel(
     private val validator = ValueInputValidator()
 
 
-
     private val _networkError = MutableStateFlow(false)
     val networkError : StateFlow<Boolean>
         get() = _networkError
@@ -28,7 +27,6 @@ class CurrencyConverterViewModel(
     private val _valueInputError = MutableStateFlow(false)
     val valueInputError : StateFlow<Boolean>
         get() = _valueInputError
-
 
 
     private val totalValue = MutableStateFlow(1.0)
@@ -41,13 +39,15 @@ class CurrencyConverterViewModel(
     val searchQuery : StateFlow<String>
         get() = _searchQuery
 
+
     val baseCurrency = repository.baseCurrency
 
     val latestUpdateDate = repository.latestDate
 
     val rates = repository.rates
-        .combine(searchQuery) { rates, query -> rates.filter { it.currencyAcronym.contains(query, true) /**|| it.title.contains(query, true)**/ } }
+        .combine(searchQuery) { rates, query -> rates.filter { it.currencyAcronym.contains(query, true) } }
         .combine(totalValue) { rates, value -> rates.onEach { it.totalValue = it.cost * value } }
+
 
     init {
         refreshDataFromRepository()

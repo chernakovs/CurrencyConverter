@@ -26,9 +26,7 @@ interface AppDatabaseDao {
     suspend fun insertCurrencies(currencies : List<DatabaseCurrency>)
 
     @Query("SELECT * FROM currency_table")
-//    suspend fun getAllCurrencies() : List<DatabaseCurrency>
      fun getAllCurrencies() : Flow<List<DatabaseCurrency>>
-
 
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -41,13 +39,11 @@ interface AppDatabaseDao {
     suspend fun getCurrencyPairByAcronyms(baseCurrencyAcronym : String, currencyAcronym : String) : DatabaseCurrencyPair
 
 
-
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertRate(rate : DatabaseRate) : Long
 
     @Query("SELECT * FROM currency_rate WHERE id = :id")
     suspend fun getRateById(id: Long) : DatabaseRate
-
 
 
     @Query("SELECT " +
@@ -62,6 +58,7 @@ interface AppDatabaseDao {
                 "AND currency_pair.base_currency = :acronym)"
     )
     fun getLatestRatesByBaseCurrencyAcronym(acronym : String) : Flow<List<DatabaseCurrencyAndRate>>
+
 
     @Query("SELECT MAX(date) FROM currency_rate, currency_pair " +
             "WHERE currency_pair.id = currency_rate.currency_pair_id " +
