@@ -4,11 +4,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.currencyconverter.database.entities.DatabaseCurrency
-import com.example.currencyconverter.database.entities.DatabaseCurrencyPair
-import com.example.currencyconverter.database.entities.DatabaseCurrencyPairAndRate
-import com.example.currencyconverter.database.entities.DatabaseRate
+import com.example.currencyconverter.database.entities.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 @Dao
 interface AppDatabaseDao {
@@ -20,6 +18,8 @@ interface AppDatabaseDao {
     @Query("SELECT * FROM currency_table WHERE acronym = :acronym")
     suspend fun getCurrencyByAcronym(acronym : String) : DatabaseCurrency
 
+    @Query("SELECT * FROM currency_table WHERE acronym = :acronym")
+    fun getCurrencyStateByAcronym(acronym : String) : Flow<DatabaseCurrency>
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -51,9 +51,8 @@ interface AppDatabaseDao {
 
 
     @Query("SELECT " +
-            "currency_pair.base_currency AS baseCurrencyAcronym, " +
             "currency_pair.currency AS currencyAcronym, " +
-            "currency_rate.cost AS cost, currency_rate.date AS date " +
+            "currency_rate.cost AS cost " +
             "FROM currency_pair, currency_rate " +
             "WHERE currency_pair.base_currency = :acronym " +
             "AND currency_pair.id = currency_rate.currency_pair_id " +
@@ -62,7 +61,11 @@ interface AppDatabaseDao {
                 "WHERE currency_pair.id = currency_rate.currency_pair_id " +
                 "AND currency_pair.base_currency = :acronym)"
     )
-//    suspend fun getLatestRatesByBaseCurrencyAcronym(acronym : String) : List<DatabaseCurrencyPairAndRate>
-    fun getLatestRatesByBaseCurrencyAcronym(acronym : String) : Flow<List<DatabaseCurrencyPairAndRate>>
+    fun getLatestRatesByBaseCurrencyAcronym(acronym : String) : Flow<List<DatabaseCurrencyAndRate>>
+
+    @Query("SELECT MAX(date) FROM currency_rate, currency_pair " +
+            "WHERE currency_pair.id = currency_rate.currency_pair_id " +
+            "AND currency_pair.base_currency = :acronym")
+    fun getLatestUpdateDateByCurrencyAcronym(acronym : String) : Flow<String>
 
 }

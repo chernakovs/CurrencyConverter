@@ -17,8 +17,8 @@ data class Currency(
 //)
 
 data class CurrencyRates(
-    val baseCurrencyAcronym: String,
-    val date: String,
+//    val baseCurrencyAcronym: String,
+//    val date: String,
     val currencyAcronym : String,
     val cost : Double,
     var totalValue : Double = cost

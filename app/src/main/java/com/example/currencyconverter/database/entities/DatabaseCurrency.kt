@@ -23,3 +23,10 @@ fun List<DatabaseCurrency>.asDataModel() : List<Currency> {
         )
     }
 }
+
+fun DatabaseCurrency.asDataModel() : Currency {
+    return Currency(
+        acronym = this.acronym,
+        title = this.title
+    )
+}

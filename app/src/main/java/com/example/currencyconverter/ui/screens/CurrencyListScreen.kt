@@ -82,19 +82,26 @@ fun CurrencyListContent(
     setSearchQuery: (String) -> Unit,
     navController : NavController,
     ) {
-    Column {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
 
         SearchRow(searchQuery = searchQuery, setSearchQuery = setSearchQuery)
 
-        if (networkError) {
-            if (currenciesList.isNullOrEmpty()) {
-                Text(text = "NETWORK ERROR")
-            } else {
-                CurrencyList(currenciesList, navController)
+        if (currenciesList.isNullOrEmpty()) {
+            if (networkError) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "NETWORK ERROR")
+                }
             }
         } else {
             CurrencyList(currenciesList, navController)
         }
+
     }
 }
 
@@ -217,7 +224,7 @@ fun SearchRow(
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 16.dp)
             .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(24.dp))
     )
 }

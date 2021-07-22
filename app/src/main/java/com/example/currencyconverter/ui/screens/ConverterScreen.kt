@@ -1,5 +1,6 @@
 package com.example.currencyconverter.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.currencyconverter.Screen
 import com.example.currencyconverter.converter.CurrencyConverterViewModel
+import com.example.currencyconverter.data.Currency
 import com.example.currencyconverter.data.CurrencyRates
 
 @ExperimentalComposeUiApi
@@ -44,9 +46,14 @@ fun ConverterScreen(
     val setValue = viewModel::setValue
     val searchQuery = viewModel.searchQuery.collectAsState()
     val setSearchQuery = viewModel::setSearchQuery
+    val baseCurrency = viewModel.baseCurrency.collectAsState(initial = Currency("", ""))
+    val latestDate = viewModel.latestUpdateDate.collectAsState("")
 
     Scaffold(
-        topBar = { ConverterTopBar(navController = navController) },
+        topBar = { ConverterTopBar(
+            navController = navController,
+            currencyTitle = baseCurrency.value.title
+        ) },
         content = {
             ConverterContent(
                 rates.value,
@@ -55,7 +62,9 @@ fun ConverterScreen(
                 value.value,
                 setValue,
                 searchQuery.value,
-                setSearchQuery
+                setSearchQuery,
+                if (!latestDate.value.isNullOrEmpty()) latestDate.value else "",
+                baseCurrency.value.acronym
             )
         }
     )
@@ -64,11 +73,12 @@ fun ConverterScreen(
 
 @Composable
 fun ConverterTopBar(
-    navController : NavController
+    navController : NavController,
+    currencyTitle : String = "Test"
 ) {
     TopAppBar(
         navigationIcon = { NavigationIconButton(navController = navController) },
-        title = { },
+        title = { Text(text = currencyTitle) },
         backgroundColor = Color.White,
         elevation = 0.dp
     )
@@ -100,24 +110,30 @@ fun ConverterContent(
     value : String,
     setValue : (String) -> Unit,
     searchQuery: String,
-    setSearchQuery: (String) -> Unit
+    setSearchQuery: (String) -> Unit,
+    latestDate : String,
+    baseCurrencyAcronym : String
 ) {
-    Column() {
+    Column {
+
+        BaseCurrencyCard(baseCurrencyAcronym, latestDate, value, inputError, setValue, searchQuery, setSearchQuery)
+
+        SearchRow(searchQuery = searchQuery, setSearchQuery = setSearchQuery)
+
 
         if (!rates.isNullOrEmpty()) {
-
-            BaseCurrencyCard(rates[0].baseCurrencyAcronym, rates[0].date, value, inputError, setValue, searchQuery, setSearchQuery)
-
-            if (networkError) {
-                if (rates.isNullOrEmpty()) {
-                    Text(text = "NETWORK ERROR")
-                } else {
-                    CurrencyRatesList(rates)
-                }
-            } else {
                 CurrencyRatesList(rates)
+        } else {
+            if (networkError) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "NETWORK ERROR")
+                }
             }
-
         }
 
     }
@@ -270,7 +286,7 @@ fun BaseCurrencyCard(
                 }
             }
 
-            SearchRow(searchQuery = searchQuery, setSearchQuery = setSearchQuery)
+//            SearchRow(searchQuery = searchQuery, setSearchQuery = setSearchQuery)
 
         }
 

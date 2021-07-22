@@ -3,14 +3,9 @@ package com.example.currencyconverter.converter
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.currencyconverter.database.AppDatabase
 import com.example.currencyconverter.database.AppDatabaseDao
-import com.example.currencyconverter.network.CurrencyApi
 import com.example.currencyconverter.repository.CurrencyRateRepository
-import com.example.currencyconverter.repository.CurrencyRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import okio.IOException
 
@@ -18,6 +13,7 @@ class CurrencyConverterViewModel(
     private val database : AppDatabaseDao,
     currencyAcronym : String
 ) : ViewModel() {
+
 
     private val repository = CurrencyRateRepository(database, currencyAcronym)
 
@@ -45,6 +41,9 @@ class CurrencyConverterViewModel(
     val searchQuery : StateFlow<String>
         get() = _searchQuery
 
+    val baseCurrency = repository.baseCurrency
+
+    val latestUpdateDate = repository.latestDate
 
     val rates = repository.rates
         .combine(searchQuery) { rates, query -> rates.filter { it.currencyAcronym.contains(query, true) /**|| it.title.contains(query, true)**/ } }

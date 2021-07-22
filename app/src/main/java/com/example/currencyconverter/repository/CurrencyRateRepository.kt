@@ -1,6 +1,7 @@
 package com.example.currencyconverter.repository
 
 import android.util.Log
+import com.example.currencyconverter.data.Currency
 import com.example.currencyconverter.database.AppDatabaseDao
 import com.example.currencyconverter.database.entities.DatabaseCurrency
 import com.example.currencyconverter.database.entities.DatabaseCurrencyPair
@@ -22,6 +23,9 @@ class CurrencyRateRepository(
             it.asDataModel()
    }
 
+    val latestDate = database.getLatestUpdateDateByCurrencyAcronym(acronym)
+
+    val baseCurrency = database.getCurrencyStateByAcronym(acronym).map { it.asDataModel() }
 
 
     suspend fun refreshCurrencyRates() {
@@ -49,12 +53,8 @@ class CurrencyRateRepository(
                             date = newCurrencyRates.date
                         )
                     )
-
                 }
-
             }
         }
-
-        }
-
+    }
 }
