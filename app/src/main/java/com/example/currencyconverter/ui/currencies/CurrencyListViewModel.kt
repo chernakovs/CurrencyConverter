@@ -2,18 +2,14 @@ package com.example.currencyconverter.ui.currencies
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.currencyconverter.data.database.AppDatabaseDao
-import com.example.currencyconverter.data.repository.CurrencyRepository
+import com.example.currencyconverter.domain.Repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import okio.IOException
 
-class CurrencyListViewModel(val database : AppDatabaseDao) : ViewModel() {
-
-    private val repository = CurrencyRepository(database)
-
+class CurrencyListViewModel(private val repository : Repository) : ViewModel() {
 
     private val _networkError = MutableStateFlow(false)
     val networkError : StateFlow<Boolean> = _networkError
@@ -22,7 +18,7 @@ class CurrencyListViewModel(val database : AppDatabaseDao) : ViewModel() {
     val searchQuery : StateFlow<String> = _searchQuery
 
 
-    val currencies = repository.currencies
+    val currencies = repository.getAllCurrencies()
         .combine(searchQuery) { rates, query -> rates.filter { it.acronym.contains(query, true) || it.title.contains(query, true) } }
 
 
@@ -33,7 +29,7 @@ class CurrencyListViewModel(val database : AppDatabaseDao) : ViewModel() {
     private fun refreshDataFromRepository() {
         viewModelScope.launch {
             try {
-                repository.refreshCurrencies()
+                repository.refreshCurrenciesList()
             } catch (networkError: IOException) {
                 _networkError.value = true
             }

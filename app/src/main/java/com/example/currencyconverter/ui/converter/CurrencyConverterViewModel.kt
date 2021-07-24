@@ -3,19 +3,17 @@ package com.example.currencyconverter.ui.converter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.currencyconverter.data.database.AppDatabaseDao
-import com.example.currencyconverter.data.repository.CurrencyRateRepository
+import com.example.currencyconverter.domain.Repository
 import com.example.currencyconverter.ui.converter.utils.ValueInputValidator
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import okio.IOException
 
 class CurrencyConverterViewModel(
-    private val database : AppDatabaseDao,
-    currencyAcronym : String
+    private val repository: Repository,
+    private val currencyAcronym : String
 ) : ViewModel() {
 
-
-    private val repository = CurrencyRateRepository(database, currencyAcronym)
 
     private val validator = ValueInputValidator()
 
@@ -36,11 +34,11 @@ class CurrencyConverterViewModel(
     val searchQuery : StateFlow<String> = _searchQuery
 
 
-    val baseCurrency = repository.baseCurrency
+    val baseCurrency = repository.getCurrency(currencyAcronym)
 
-    val latestUpdateDate = repository.latestDate
+    val latestUpdateDate = repository.getBaseCurrencyLatestUpdateDate(currencyAcronym)
 
-    val rates = repository.rates
+    val rates = repository.getRatesByBaseAcronym(currencyAcronym)
         .combine(searchQuery) { rates, query -> rates.filter { it.currencyAcronym.contains(query, true) } }
         .combine(totalValue) { rates, value -> rates.onEach { it.totalValue = it.cost * value } }
 
@@ -52,7 +50,7 @@ class CurrencyConverterViewModel(
     private fun refreshDataFromRepository() {
         viewModelScope.launch {
             try {
-                repository.refreshCurrencyRates()
+                repository.refreshCurrencyRates(currencyAcronym)
             } catch (networkError: IOException) {
                 _networkError.value = true
             }
