@@ -192,12 +192,10 @@ fun CurrencyRateCard(
                     .wrapContentWidth(Alignment.End)
                     .fillMaxWidth()
             ) {
-                Text(text = rate.totalValue.toString(), modifier = Modifier.padding(end = 8.dp))
+                Text(text = rate.totalValue.toString(), modifier = Modifier.padding(end = 16.dp))
             }
         }
-
     }
-
 }
 
 

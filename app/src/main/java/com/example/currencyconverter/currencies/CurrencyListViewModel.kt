@@ -23,12 +23,10 @@ class CurrencyListViewModel(val database : AppDatabaseDao) : ViewModel() {
 
 
     private val _networkError = MutableStateFlow(false)
-    val networkError : StateFlow<Boolean>
-        get() = _networkError
+    val networkError : StateFlow<Boolean> = _networkError
 
     private val _searchQuery = MutableStateFlow("")
-    val searchQuery : StateFlow<String>
-        get() = _searchQuery
+    val searchQuery : StateFlow<String> = _searchQuery
 
 
     val currencies = repository.currencies

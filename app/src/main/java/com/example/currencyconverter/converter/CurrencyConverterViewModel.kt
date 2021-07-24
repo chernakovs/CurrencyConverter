@@ -21,23 +21,19 @@ class CurrencyConverterViewModel(
 
 
     private val _networkError = MutableStateFlow(false)
-    val networkError : StateFlow<Boolean>
-        get() = _networkError
+    val networkError : StateFlow<Boolean> = _networkError
 
     private val _valueInputError = MutableStateFlow(false)
-    val valueInputError : StateFlow<Boolean>
-        get() = _valueInputError
+    val valueInputError : StateFlow<Boolean> = _valueInputError
 
 
     private val totalValue = MutableStateFlow(1.0)
 
     private val _valueString = MutableStateFlow(totalValue.value.toString())
-    val valueString : StateFlow<String>
-        get() = _valueString
+    val valueString : StateFlow<String> = _valueString
 
     private val _searchQuery = MutableStateFlow("")
-    val searchQuery : StateFlow<String>
-        get() = _searchQuery
+    val searchQuery : StateFlow<String> = _searchQuery
 
 
     val baseCurrency = repository.baseCurrency
