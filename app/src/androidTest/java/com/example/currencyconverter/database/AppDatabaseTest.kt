@@ -1,16 +1,22 @@
 package com.example.currencyconverter.database
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.currencyconverter.database.entities.DatabaseCurrency
+import com.example.currencyconverter.database.entities.DatabaseCurrencyAndRate
 import com.example.currencyconverter.database.entities.DatabaseCurrencyPair
 import com.example.currencyconverter.database.entities.DatabaseRate
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
@@ -20,6 +26,9 @@ class AppDatabaseTest {
 
     private lateinit var dao: AppDatabaseDao
     private lateinit var db: AppDatabase
+
+    @get:Rule
+    var instantExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun createDb() {
@@ -40,7 +49,7 @@ class AppDatabaseTest {
     @ExperimentalCoroutinesApi
     @Test
     @Throws(Exception::class)
-    fun insertAndGetDatabaseCurrency() = runBlocking {
+    fun insertAndGetDatabaseCurrency() = runBlockingTest {
         // given
         val newCurrency = DatabaseCurrency(
             acronym = "usd",
@@ -57,7 +66,24 @@ class AppDatabaseTest {
     @ExperimentalCoroutinesApi
     @Test
     @Throws(Exception::class)
-    fun insertAndGetDatabaseCurrenciesList() = runBlocking {
+    fun insertAndGetDatabaseCurrencyFlow() = runBlockingTest {
+        // given
+        val newCurrency = DatabaseCurrency(
+            acronym = "usd",
+            title = "United States dollar"
+        )
+        // when
+        dao.insertCurrency(newCurrency)
+        val res = dao.getCurrencyStateByAcronym("usd").take(1).toList()
+        // then
+        assertEquals(newCurrency.acronym, res[0].acronym)
+    }
+
+
+    @ExperimentalCoroutinesApi
+    @Test
+    @Throws(Exception::class)
+    fun insertAndGetDatabaseCurrenciesList() = runBlockingTest {
         // given
         val currencyList = listOf(
             DatabaseCurrency(
@@ -75,16 +101,16 @@ class AppDatabaseTest {
         )
         // when
         dao.insertCurrencies(currencyList)
-        val response = dao.getAllCurrencies()
+        val response = dao.getAllCurrencies().take(1).toList()
         // then
-        assertEquals(currencyList, response)
+        assertEquals(currencyList, response[0])
     }
 
 
     @ExperimentalCoroutinesApi
     @Test
     @Throws(Exception::class)
-    fun insertAndGetDatabaseCurrencyPair() = runBlocking {
+    fun insertAndGetDatabaseCurrencyPair() = runBlockingTest {
         // given
         val currencyList = listOf(
             DatabaseCurrency(
@@ -116,7 +142,7 @@ class AppDatabaseTest {
     @ExperimentalCoroutinesApi
     @Test
     @Throws(Exception::class)
-    fun insertAndGetDatabaseRate() = runBlocking {
+    fun insertAndGetDatabaseRate() = runBlockingTest {
         // given
         val currencyList = listOf(
             DatabaseCurrency(
@@ -146,5 +172,84 @@ class AppDatabaseTest {
         assertEquals(res.currencyPairId, id)
         assertEquals(res.date, rate.date)
     }
+
+
+    @ExperimentalCoroutinesApi
+    @Test
+    @Throws(Exception::class)
+    fun getLatestUpdateDateByCurrencyAcronym() = runBlockingTest {
+        // given
+        val currencyList = listOf(
+            DatabaseCurrency(
+                acronym = "eur",
+                title = "Euro"
+            ),
+            DatabaseCurrency(
+                acronym = "rub",
+                title = "Russian ruble"
+            )
+        )
+        val pair = DatabaseCurrencyPair(
+            baseCurrencyAcronym = currencyList[0].acronym,
+            currencyAcronym = currencyList[1].acronym
+        )
+        dao.insertCurrencies(currencyList)
+        val id = dao.insertCurrencyPair(pair)
+        val rate = DatabaseRate(
+            currencyPairId = id,
+            cost = 100.0,
+            date = "2021-07-13"
+        )
+        val rate2 = DatabaseRate(
+            currencyPairId = id,
+            cost = 100.0,
+            date = "2021-07-15"
+        )
+        dao.insertRate(rate)
+        dao.insertRate(rate2)
+        // when
+        val response = dao.getLatestUpdateDateByCurrencyAcronym(currencyList[0].acronym).take(1).toList()
+        // then
+        assertEquals("2021-07-15", response[0])
+    }
+
+
+    @ExperimentalCoroutinesApi
+    @Test
+    @Throws(Exception::class)
+    fun getLatestRatesByBaseCurrencyAcronym() = runBlockingTest {
+        // given
+        val currencyList = listOf(
+            DatabaseCurrency(
+                acronym = "eur",
+                title = "Euro"
+            ),
+            DatabaseCurrency(
+                acronym = "rub",
+                title = "Russian ruble"
+            )
+        )
+        val pair = DatabaseCurrencyPair(
+            baseCurrencyAcronym = currencyList[0].acronym,
+            currencyAcronym = currencyList[1].acronym
+        )
+        dao.insertCurrencies(currencyList)
+        val id = dao.insertCurrencyPair(pair)
+        val rate = DatabaseRate(
+            currencyPairId = id,
+            cost = 100.0,
+            date = "2021-07-13"
+        )
+        dao.insertRate(rate)
+        val databaseCurrencyAndRateList = listOf(DatabaseCurrencyAndRate(
+            currencyAcronym = "rub",
+            cost = 100.0
+        ))
+        // when
+        val response = dao.getLatestRatesByBaseCurrencyAcronym("eur").take(1).toList()
+        // then
+        assertEquals(databaseCurrencyAndRateList, response[0])
+    }
+
 
 }
