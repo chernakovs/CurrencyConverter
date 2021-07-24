@@ -15,7 +15,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
-class CurrencyRepository(private val database : AppDatabaseDao) : Repository {
+class CurrencyRepository(
+    private val database: AppDatabaseDao,
+    private val apiService: CurrencyApi
+) : Repository {
 
     override fun getRatesByBaseAcronym(acronym: String): Flow<List<CurrencyRates>> {
         return database.getLatestRatesByBaseCurrencyAcronym(acronym).map {
@@ -40,7 +43,7 @@ class CurrencyRepository(private val database : AppDatabaseDao) : Repository {
 
     override suspend fun refreshCurrenciesList() {
         withContext(Dispatchers.IO) {
-            val newCurrencies = CurrencyApi.retrofitService.getCurrencies().asNetworkData()
+            val newCurrencies = apiService.getCurrencies().asNetworkData()
             database.insertCurrencies(newCurrencies.asDatabaseData())
         }
     }
@@ -48,7 +51,7 @@ class CurrencyRepository(private val database : AppDatabaseDao) : Repository {
     override suspend fun refreshCurrencyRates(acronym : String) {
         withContext(Dispatchers.IO) {
 
-            val newCurrencyRates = CurrencyApi.retrofitService.getRates(acronym).asNetworkData()
+            val newCurrencyRates = apiService.getRates(acronym).asNetworkData()
 
             newCurrencyRates.rates.map {
 
