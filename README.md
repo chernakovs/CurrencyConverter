@@ -18,6 +18,7 @@ Currency converter\
 - [x] Coroutines
 - [x] Kotlin Flow
 - [x] MVVM
+- [x] Repository
 - [x] Network: Retrofit2
 - [x] JSON: Moshi
 - [x] Room
