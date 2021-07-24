@@ -30,37 +30,8 @@ class MainActivity : ComponentActivity() {
                 }
 
                 CurrencyConverterAppNavigation(application)
+
             }
         }
     }
 }
-
-
-//@ExperimentalComposeUiApi
-//@ExperimentalMaterialApi
-//@Composable
-//fun CurrencyConverterApp(
-//    dataSource : AppDatabaseDao
-//) {
-//    val navController = rememberNavController()
-//
-//    NavHost(navController, startDestination = Screen.CurrencyList.route) {
-//        composable(route = Screen.CurrencyList.route) {
-//            CurrencyListScreen(
-//                navController,
-//                viewModel(factory = CurrencyListViewModelFactory(dataSource))
-//            )
-//        }
-//        composable(route = Screen.Converter.route) { backStackEntry ->
-//            val currencyAcronym = backStackEntry.arguments?.getString("currencyAcronym")
-//            requireNotNull(currencyAcronym) { "currencyAcronym not found" }
-//            ConverterScreen(
-//                navController,
-//                viewModel(factory = CurrencyConverterViewModelFactory(dataSource = dataSource,
-//                    currencyAcronym = currencyAcronym
-//                ))
-//            )
-//        }
-//    }
-//
-//}

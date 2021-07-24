@@ -1,4 +1,4 @@
-package com.example.currencyconverter.ui.screens
+package com.example.currencyconverter.ui.currencies.screens
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -26,9 +26,9 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.currencyconverter.ui.Screen
 import com.example.currencyconverter.ui.currencies.CurrencyListViewModel
 import com.example.currencyconverter.domain.Currency
+import com.example.currencyconverter.ui.navigation.Screen
 
 @ExperimentalComposeUiApi
 @ExperimentalMaterialApi

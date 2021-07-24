@@ -1,4 +1,4 @@
-package com.example.currencyconverter.ui.screens
+package com.example.currencyconverter.ui.converter.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,10 +25,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.currencyconverter.ui.Screen
 import com.example.currencyconverter.ui.converter.CurrencyConverterViewModel
 import com.example.currencyconverter.domain.Currency
 import com.example.currencyconverter.domain.CurrencyRates
+import com.example.currencyconverter.ui.currencies.screens.SearchRow
+import com.example.currencyconverter.ui.navigation.Screen
 
 @ExperimentalComposeUiApi
 @Composable

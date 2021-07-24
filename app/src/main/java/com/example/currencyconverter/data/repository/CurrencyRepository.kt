@@ -5,8 +5,8 @@ import com.example.currencyconverter.data.database.entities.DatabaseCurrencyPair
 import com.example.currencyconverter.data.database.entities.DatabaseRate
 import com.example.currencyconverter.data.database.entities.asDataModel
 import com.example.currencyconverter.data.network.CurrencyApi
-import com.example.currencyconverter.data.network.asDatabaseData
-import com.example.currencyconverter.data.network.asNetworkData
+import com.example.currencyconverter.data.network.dto.asDatabaseData
+import com.example.currencyconverter.data.network.dto.asNetworkData
 import com.example.currencyconverter.domain.Currency
 import com.example.currencyconverter.domain.CurrencyRates
 import com.example.currencyconverter.domain.Repository
@@ -79,7 +79,4 @@ class CurrencyRepository(
             }
         }
     }
-
-
-
 }
