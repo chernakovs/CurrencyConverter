@@ -15,10 +15,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
+private const val insertErrorCode = -1L
+
+
 class CurrencyRepository(
     private val database: AppDatabaseDao,
     private val apiService: CurrencyApi
 ) : Repository {
+
 
     override fun getRatesByBaseAcronym(acronym: String): Flow<List<CurrencyRates>> {
         return database.getLatestRatesByBaseCurrencyAcronym(acronym).map {
@@ -63,7 +67,7 @@ class CurrencyRepository(
                             currencyAcronym = it.currency
                         )
                     )
-                    if (pairId == -1L) {
+                    if (pairId == insertErrorCode) {
                         pairId = database.getCurrencyPairByAcronyms(
                             newCurrencyRates.baseCurrency, it.currency
                         ).id

@@ -14,8 +14,10 @@ object ServiceLocator {
         NetworkService()
     }
 
+    private var valueInputValidator : ValueInputValidator? = null
+
     @Volatile
-    var currencyRepository: CurrencyRepository? = null
+    private var currencyRepository: CurrencyRepository? = null
 
     fun provideCurrencyRepository(context: Context): CurrencyRepository {
         synchronized(this) {
@@ -35,7 +37,7 @@ object ServiceLocator {
     }
 
     fun provideValueInputValidator(): ValueInputValidator {
-        return ValueInputValidator()
+        return valueInputValidator ?: ValueInputValidator()
     }
 
 }

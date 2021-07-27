@@ -2,9 +2,7 @@ package com.example.currencyconverter.ui.converter
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.currencyconverter.data.database.AppDatabaseDao
 import com.example.currencyconverter.domain.Repository
-import com.example.currencyconverter.ui.converter.utils.ValueInputValidator
 import com.example.currencyconverter.ui.di.ServiceLocator
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
