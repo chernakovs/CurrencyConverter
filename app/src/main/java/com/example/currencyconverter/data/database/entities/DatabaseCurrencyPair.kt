@@ -25,5 +25,5 @@ data class DatabaseCurrencyPair(
     @ColumnInfo(name = "base_currency")
     val baseCurrencyAcronym : String,
     @ColumnInfo(name = "currency")
-    val currencyAcronym : String,
+    val currencyAcronym: String,
 )

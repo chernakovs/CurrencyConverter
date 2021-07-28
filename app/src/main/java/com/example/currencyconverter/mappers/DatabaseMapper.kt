@@ -22,7 +22,7 @@ class CurrencyDatabaseMapper() {
             )
         }
 
-    fun databaseCurrencyAndRateListMapToDomain(rates: List<DatabaseCurrencyAndRate>) : List<CurrencyRates> =
+    fun databaseCurrencyAndRateListMapToDomain(rates: List<DatabaseCurrencyAndRate>): List<CurrencyRates> =
         rates.map {
             CurrencyRates(
                 currencyAcronym = it.currencyAcronym,

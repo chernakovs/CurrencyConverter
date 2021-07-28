@@ -9,17 +9,24 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import okio.IOException
 
-class CurrencyListViewModel(private val repository : Repository) : ViewModel() {
+class CurrencyListViewModel(private val repository: Repository) : ViewModel() {
 
     private val _networkError = MutableStateFlow(false)
-    val networkError : StateFlow<Boolean> = _networkError
+    val networkError: StateFlow<Boolean> = _networkError
 
     private val _searchQuery = MutableStateFlow("")
-    val searchQuery : StateFlow<String> = _searchQuery
+    val searchQuery: StateFlow<String> = _searchQuery
 
 
     val currencies = repository.getAllCurrencies()
-        .combine(searchQuery) { rates, query -> rates.filter { it.acronym.contains(query, true) || it.title.contains(query, true) } }
+        .combine(searchQuery) { rates, query ->
+            rates.filter {
+                it.acronym.contains(
+                    query,
+                    true
+                ) || it.title.contains(query, true)
+            }
+        }
 
 
     init {
@@ -36,7 +43,7 @@ class CurrencyListViewModel(private val repository : Repository) : ViewModel() {
         }
     }
 
-    fun setSearchQuery(query : String) {
+    fun setSearchQuery(query: String) {
         _searchQuery.value = query
     }
 

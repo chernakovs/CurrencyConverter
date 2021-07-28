@@ -10,7 +10,7 @@ import okio.IOException
 
 class CurrencyConverterViewModel(
     private val repository: Repository,
-    private val currencyAcronym : String
+    private val currencyAcronym: String
 ) : ViewModel() {
 
 
@@ -18,19 +18,19 @@ class CurrencyConverterViewModel(
 
 
     private val _networkError = MutableStateFlow(false)
-    val networkError : StateFlow<Boolean> = _networkError
+    val networkError: StateFlow<Boolean> = _networkError
 
     private val _valueInputError = MutableStateFlow(false)
-    val valueInputError : StateFlow<Boolean> = _valueInputError
+    val valueInputError: StateFlow<Boolean> = _valueInputError
 
 
     private val totalValue = MutableStateFlow(1.0)
 
     private val _valueString = MutableStateFlow(totalValue.value.toString())
-    val valueString : StateFlow<String> = _valueString
+    val valueString: StateFlow<String> = _valueString
 
     private val _searchQuery = MutableStateFlow("")
-    val searchQuery : StateFlow<String> = _searchQuery
+    val searchQuery: StateFlow<String> = _searchQuery
 
 
     val baseCurrency = repository.getCurrency(currencyAcronym)
@@ -38,7 +38,14 @@ class CurrencyConverterViewModel(
     val latestUpdateDate = repository.getBaseCurrencyLatestUpdateDate(currencyAcronym)
 
     val rates = repository.getRatesByBaseAcronym(currencyAcronym)
-        .combine(searchQuery) { rates, query -> rates.filter { it.currencyAcronym.contains(query, true) } }
+        .combine(searchQuery) { rates, query ->
+            rates.filter {
+                it.currencyAcronym.contains(
+                    query,
+                    true
+                )
+            }
+        }
         .combine(totalValue) { rates, value -> rates.onEach { it.totalValue = it.cost * value } }
 
 
@@ -56,19 +63,18 @@ class CurrencyConverterViewModel(
         }
     }
 
-    fun setValue(value : String) {
+    fun setValue(value: String) {
         if (validator.validate(value)) {
             _valueInputError.value = false
             _valueString.value = value
             totalValue.value = value.toDouble()
-        }
-        else {
+        } else {
             _valueInputError.value = true
             _valueString.value = value
         }
     }
 
-    fun setSearchQuery(query : String) {
+    fun setSearchQuery(query: String) {
         _searchQuery.value = query
     }
 

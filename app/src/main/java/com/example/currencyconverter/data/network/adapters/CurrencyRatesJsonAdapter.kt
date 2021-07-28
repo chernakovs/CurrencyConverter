@@ -5,7 +5,7 @@ import com.squareup.moshi.FromJson
 
 internal object CurrencyRatesJsonAdapter {
     @FromJson
-    fun fromJson(rates: Map<String, Double>) : List<NetworkRate> {
+    fun fromJson(rates: Map<String, Double>): List<NetworkRate> {
         return rates.map {
             NetworkRate(
                 currency = it.key,

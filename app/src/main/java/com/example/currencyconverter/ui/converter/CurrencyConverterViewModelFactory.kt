@@ -7,7 +7,7 @@ import com.example.currencyconverter.domain.Repository
 
 class CurrencyConverterViewModelFactory(
     private val repository: Repository,
-    private val currencyAcronym : String
+    private val currencyAcronym: String
 ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {

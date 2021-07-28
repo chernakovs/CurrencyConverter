@@ -5,7 +5,7 @@ import com.squareup.moshi.FromJson
 
 internal object CurrenciesJsonAdapter {
     @FromJson
-    fun fromJson(response: Map<String, String>) : List<NetworkCurrency> {
+    fun fromJson(response: Map<String, String>): List<NetworkCurrency> {
         return response.map {
             NetworkCurrency(
                 acronym = it.key,

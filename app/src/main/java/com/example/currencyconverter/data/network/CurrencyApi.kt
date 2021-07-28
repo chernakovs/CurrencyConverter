@@ -12,6 +12,6 @@ interface CurrencyApi {
     suspend fun getCurrencies(): List<NetworkCurrency>
 
     @GET("/latest")
-    suspend fun getRates(@Query(value="from") currency : String) : NetworkCurrencyRate
+    suspend fun getRates(@Query(value = "from") currency: String): NetworkCurrencyRate
 
 }

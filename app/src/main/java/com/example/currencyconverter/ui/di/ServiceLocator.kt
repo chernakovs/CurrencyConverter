@@ -30,24 +30,26 @@ object ServiceLocator {
     }
 
 
-    private var valueInputValidator : ValueInputValidator? = null
+    private var valueInputValidator: ValueInputValidator? = null
 
     @Volatile
     private var currencyRepository: CurrencyRepository? = null
 
     fun provideCurrencyRepository(context: Context): CurrencyRepository {
-            return currencyRepository ?: createCurrencyRepository(context)
+        return currencyRepository ?: createCurrencyRepository(context)
     }
 
     private fun createCurrencyRepository(context: Context): CurrencyRepository {
         val database = database ?: createDatabase(context)
-        return CurrencyRepository(
+        val repository = CurrencyRepository(
             database.databaseDao,
             networkService.getCurrencyApi(),
             databaseMapper,
             networkMapper,
             domainMapper
         )
+        currencyRepository = repository
+        return repository
     }
 
     private fun createDatabase(context: Context): AppDatabase {

@@ -10,17 +10,18 @@ import androidx.room.*
             entity = DatabaseCurrencyPair::class,
             parentColumns = ["id"],
             childColumns = ["currency_pair_id"],
-            onDelete = ForeignKey.NO_ACTION),
+            onDelete = ForeignKey.NO_ACTION
+        ),
     ]
 )
 data class DatabaseRate(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    val id : Long = 0L,
+    val id: Long = 0L,
     @ColumnInfo(name = "currency_pair_id")
-    val currencyPairId : Long,
+    val currencyPairId: Long,
     @ColumnInfo(name = "cost")
-    val cost : Double,
+    val cost: Double,
     @ColumnInfo(name = "date")
-    val date : String
+    val date: String
 )

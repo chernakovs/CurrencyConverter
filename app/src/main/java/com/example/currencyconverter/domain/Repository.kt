@@ -16,6 +16,6 @@ interface Repository {
 
     suspend fun refreshCurrenciesList()
 
-    suspend fun refreshCurrencyRates(acronym : String)
+    suspend fun refreshCurrencyRates(acronym: String)
 
 }

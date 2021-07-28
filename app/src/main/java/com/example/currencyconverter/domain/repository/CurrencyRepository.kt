@@ -34,7 +34,8 @@ class CurrencyRepository(
     }
 
     override fun getCurrency(acronym: String): Flow<Currency> {
-        return database.getCurrencyStateByAcronym(acronym).map { databaseMapper.currencyMapToDomain(it) }
+        return database.getCurrencyStateByAcronym(acronym)
+            .map { databaseMapper.currencyMapToDomain(it) }
     }
 
 
@@ -51,24 +52,30 @@ class CurrencyRepository(
         }
     }
 
-    override suspend fun refreshCurrencyRates(acronym : String) {
+    override suspend fun refreshCurrencyRates(acronym: String) {
         withContext(Dispatchers.IO) {
 
             val currencyRates = apiService.getRates(acronym)
 
             currencyRates.rates.map {
 
-                val pairId = database.getCurrencyPairByAcronyms(currencyRates.base, it.currency)?.id ?:
-                    database.insertCurrencyPair(
+                val pairId = database.getCurrencyPairByAcronyms(currencyRates.base, it.currency)?.id
+                    ?: database.insertCurrencyPair(
                         domainMapper.currencyPairMapToDatabase(
                             CurrencyPair(
                                 baseCurrencyAcronym = currencyRates.base,
-                                currencyAcronym =  it.currency
+                                currencyAcronym = it.currency
                             )
                         )
                     )
 
-                database.insertRate(domainMapper.toDatabaseRate(pairId, it.cost, currencyRates.date))
+                database.insertRate(
+                    domainMapper.toDatabaseRate(
+                        pairId,
+                        it.cost,
+                        currencyRates.date
+                    )
+                )
 
             }
 

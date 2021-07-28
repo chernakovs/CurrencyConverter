@@ -7,6 +7,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.graphics.Color
+import com.example.currencyconverter.CurrencyConverterApplication
 import com.example.currencyconverter.ui.navigation.CurrencyConverterAppNavigation
 import com.example.currencyconverter.ui.theme.CurrencyConverterTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController

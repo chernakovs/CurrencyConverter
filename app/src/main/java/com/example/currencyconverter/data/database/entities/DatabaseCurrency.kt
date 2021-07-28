@@ -8,8 +8,8 @@ import androidx.room.PrimaryKey
 data class DatabaseCurrency(
     @PrimaryKey()
     @ColumnInfo(name = "acronym")
-    val acronym : String,
+    val acronym: String,
     @ColumnInfo(name = "title")
-    val title : String
+    val title: String
 )
 

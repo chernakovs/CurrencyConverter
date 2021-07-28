@@ -8,12 +8,14 @@ import com.example.currencyconverter.data.database.entities.DatabaseCurrency
 import com.example.currencyconverter.data.database.entities.DatabaseCurrencyPair
 import com.example.currencyconverter.data.database.entities.DatabaseRate
 
-@Database(entities = [
-    DatabaseCurrency::class,
-    DatabaseCurrencyPair::class,
-    DatabaseRate::class
-],
-    version = 1, exportSchema = false)
+@Database(
+    entities = [
+        DatabaseCurrency::class,
+        DatabaseCurrencyPair::class,
+        DatabaseRate::class
+    ],
+    version = 1, exportSchema = false
+)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract val databaseDao: AppDatabaseDao
@@ -30,7 +32,8 @@ abstract class AppDatabase : RoomDatabase() {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
                         AppDatabase::class.java,
-                        "currency_converter_database")
+                        "currency_converter_database"
+                    )
                         .fallbackToDestructiveMigration()
                         .build()
                     INSTANCE = instance
