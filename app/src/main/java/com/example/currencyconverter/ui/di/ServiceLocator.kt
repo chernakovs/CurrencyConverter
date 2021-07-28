@@ -36,9 +36,7 @@ object ServiceLocator {
     private var currencyRepository: CurrencyRepository? = null
 
     fun provideCurrencyRepository(context: Context): CurrencyRepository {
-        synchronized(this) {
             return currencyRepository ?: createCurrencyRepository(context)
-        }
     }
 
     private fun createCurrencyRepository(context: Context): CurrencyRepository {
