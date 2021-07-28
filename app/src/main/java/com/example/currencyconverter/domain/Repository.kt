@@ -1,5 +1,7 @@
 package com.example.currencyconverter.domain
 
+import com.example.currencyconverter.domain.model.Currency
+import com.example.currencyconverter.domain.model.CurrencyRates
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {

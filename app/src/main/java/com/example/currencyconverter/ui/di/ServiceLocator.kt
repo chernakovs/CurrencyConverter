@@ -3,7 +3,10 @@ package com.example.currencyconverter.ui.di
 import android.content.Context
 import com.example.currencyconverter.data.database.AppDatabase
 import com.example.currencyconverter.data.network.NetworkService
-import com.example.currencyconverter.data.repository.CurrencyRepository
+import com.example.currencyconverter.domain.repository.CurrencyRepository
+import com.example.currencyconverter.mappers.CurrencyDatabaseMapper
+import com.example.currencyconverter.mappers.CurrencyDomainMapper
+import com.example.currencyconverter.mappers.CurrencyNetworkMapper
 import com.example.currencyconverter.ui.converter.utils.ValueInputValidator
 
 object ServiceLocator {
@@ -13,6 +16,19 @@ object ServiceLocator {
     private val networkService by lazy {
         NetworkService()
     }
+
+    private val domainMapper by lazy {
+        CurrencyDomainMapper()
+    }
+
+    private val networkMapper by lazy {
+        CurrencyNetworkMapper()
+    }
+
+    private val databaseMapper by lazy {
+        CurrencyDatabaseMapper()
+    }
+
 
     private var valueInputValidator : ValueInputValidator? = null
 
@@ -27,7 +43,13 @@ object ServiceLocator {
 
     private fun createCurrencyRepository(context: Context): CurrencyRepository {
         val database = database ?: createDatabase(context)
-        return CurrencyRepository(database.databaseDao, networkService.getCurrencyApi())
+        return CurrencyRepository(
+            database.databaseDao,
+            networkService.getCurrencyApi(),
+            databaseMapper,
+            networkMapper,
+            domainMapper
+        )
     }
 
     private fun createDatabase(context: Context): AppDatabase {

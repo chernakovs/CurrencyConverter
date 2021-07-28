@@ -25,9 +25,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.currencyconverter.domain.model.Currency
+import com.example.currencyconverter.domain.model.CurrencyRates
 import com.example.currencyconverter.ui.converter.CurrencyConverterViewModel
-import com.example.currencyconverter.domain.Currency
-import com.example.currencyconverter.domain.CurrencyRates
 import com.example.currencyconverter.ui.currencies.screens.SearchRow
 import com.example.currencyconverter.ui.navigation.Screen
 

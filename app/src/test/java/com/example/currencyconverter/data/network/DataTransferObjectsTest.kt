@@ -1,6 +1,7 @@
 package com.example.currencyconverter.data.network
 
 import com.example.currencyconverter.data.database.entities.DatabaseCurrency
+import com.example.currencyconverter.data.network.dto.*
 import org.junit.Assert.*
 
 import org.junit.Test
@@ -36,10 +37,12 @@ class DataTransferObjectsTest {
         val networkCurrencyRate = NetworkCurrencyRate(
             date = "2021-07-22",
             baseCurrency = "eur",
-            rates = listOf(NetworkRate(
-                currency = "aed",
-                cost = 4.331093
-            ))
+            rates = listOf(
+                NetworkRate(
+                    currency = "aed",
+                    cost = 4.331093
+            )
+            )
         )
         // when
         val returnedNetworkCurrencyRate = mapStringAny.asNetworkData()
