@@ -7,15 +7,6 @@ data class NetworkCurrency(
     val title : String
 )
 
-fun Map<String, String>.asNetworkData() : List<NetworkCurrency> {
-    return map {
-        NetworkCurrency(
-            acronym = it.key,
-            title = it.value
-        )
-    }
-}
-
 fun List<NetworkCurrency>.asDatabaseData() : List<DatabaseCurrency> {
     return map {
         DatabaseCurrency(

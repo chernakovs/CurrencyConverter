@@ -35,8 +35,7 @@ interface AppDatabaseDao {
     suspend fun getCurrencyPairById(id : Long) : DatabaseCurrencyPair
 
     @Query("SELECT * FROM currency_pair WHERE base_currency = :baseCurrencyAcronym AND currency = :currencyAcronym")
-    suspend fun getCurrencyPairByAcronyms(baseCurrencyAcronym : String, currencyAcronym : String) : DatabaseCurrencyPair
-
+    suspend fun getCurrencyPairByAcronyms(baseCurrencyAcronym : String, currencyAcronym : String) : DatabaseCurrencyPair?
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertRate(rate : DatabaseRate) : Long

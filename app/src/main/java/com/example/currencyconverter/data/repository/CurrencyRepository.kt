@@ -1,12 +1,12 @@
 package com.example.currencyconverter.data.repository
 
+import android.util.Log
 import com.example.currencyconverter.data.database.AppDatabaseDao
 import com.example.currencyconverter.data.database.entities.DatabaseCurrencyPair
 import com.example.currencyconverter.data.database.entities.DatabaseRate
 import com.example.currencyconverter.data.database.entities.asDataModel
 import com.example.currencyconverter.data.network.CurrencyApi
 import com.example.currencyconverter.data.network.dto.asDatabaseData
-import com.example.currencyconverter.data.network.dto.asNetworkData
 import com.example.currencyconverter.domain.Currency
 import com.example.currencyconverter.domain.CurrencyRates
 import com.example.currencyconverter.domain.Repository
@@ -14,9 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-
-private const val insertErrorCode = -1L
-
 
 class CurrencyRepository(
     private val database: AppDatabaseDao,
@@ -47,7 +44,7 @@ class CurrencyRepository(
 
     override suspend fun refreshCurrenciesList() {
         withContext(Dispatchers.IO) {
-            val newCurrencies = apiService.getCurrencies().asNetworkData()
+            val newCurrencies = apiService.getCurrencies()
             database.insertCurrencies(newCurrencies.asDatabaseData())
         }
     }
@@ -55,32 +52,22 @@ class CurrencyRepository(
     override suspend fun refreshCurrencyRates(acronym : String) {
         withContext(Dispatchers.IO) {
 
-            val newCurrencyRates = apiService.getRates(acronym).asNetworkData()
+            val currencyRates = apiService.getRates(acronym)
 
-            newCurrencyRates.rates.map {
+            currencyRates.rates.map {
 
-                if (database.getCurrencyByAcronym(it.currency) != null) { /** bug in API: not all currencies are represented in the /latest/currencies.json response **/
+                val pairId = database.getCurrencyPairByAcronyms(currencyRates.base, it.currency)?.id ?:
+                    database.insertCurrencyPair(DatabaseCurrencyPair(baseCurrencyAcronym = currencyRates.base, currencyAcronym =  it.currency))
 
-                var pairId = database.insertCurrencyPair(
-                        DatabaseCurrencyPair(
-                            baseCurrencyAcronym = newCurrencyRates.baseCurrency,
-                            currencyAcronym = it.currency
-                        )
-                    )
-                    if (pairId == insertErrorCode) {
-                        pairId = database.getCurrencyPairByAcronyms(
-                            newCurrencyRates.baseCurrency, it.currency
-                        ).id
-                    }
                     database.insertRate(
                         DatabaseRate(
                             currencyPairId = pairId,
                             cost = it.cost,
-                            date = newCurrencyRates.date
+                            date = currencyRates.date
                         )
                     )
-                }
             }
+
         }
     }
 }

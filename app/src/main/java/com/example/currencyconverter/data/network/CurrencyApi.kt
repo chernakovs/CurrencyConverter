@@ -1,14 +1,17 @@
 package com.example.currencyconverter.data.network
 
+import com.example.currencyconverter.data.network.dto.NetworkCurrency
+import com.example.currencyconverter.data.network.dto.NetworkCurrencyRate
 import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.Query
+
 
 interface CurrencyApi {
 
-    @GET("latest/currencies.json")
-    suspend fun getCurrencies(): Map<String, String>
+    @GET("/currencies")
+    suspend fun getCurrencies(): List<NetworkCurrency>
 
-    @GET("latest/currencies/{currency}.json")
-    suspend fun getRates(@Path(value="currency") currency : String) : Map<String, Any>
+    @GET("/latest")
+    suspend fun getRates(@Query(value="from") currency : String) : NetworkCurrencyRate
 
 }
