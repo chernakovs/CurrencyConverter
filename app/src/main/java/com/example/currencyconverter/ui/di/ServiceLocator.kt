@@ -61,7 +61,7 @@ object ServiceLocator {
         return valueInputValidator ?: createValueInputValidator()
     }
 
-    fun createValueInputValidator() : ValueInputValidator {
+    private fun createValueInputValidator() : ValueInputValidator {
         val validator = ValueInputValidator()
         valueInputValidator = validator
         return validator
