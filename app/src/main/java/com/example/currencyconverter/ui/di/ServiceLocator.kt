@@ -32,7 +32,6 @@ object ServiceLocator {
 
     private var valueInputValidator: ValueInputValidator? = null
 
-    @Volatile
     private var currencyRepository: CurrencyRepository? = null
 
     fun provideCurrencyRepository(context: Context): CurrencyRepository {
@@ -59,7 +58,13 @@ object ServiceLocator {
     }
 
     fun provideValueInputValidator(): ValueInputValidator {
-        return valueInputValidator ?: ValueInputValidator()
+        return valueInputValidator ?: createValueInputValidator()
+    }
+
+    fun createValueInputValidator() : ValueInputValidator {
+        val validator = ValueInputValidator()
+        valueInputValidator = validator
+        return validator
     }
 
 }
