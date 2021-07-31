@@ -1,6 +1,6 @@
 # CurrencyConverter
 Simple currency converter for Android.\
-API: https://github.com/fawazahmed0/currency-api#readme
+API: https://www.frankfurter.app/
 # Screenshots
 Currency list\
 \
