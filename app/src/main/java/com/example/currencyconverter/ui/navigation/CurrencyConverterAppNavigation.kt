@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.currencyconverter.CurrencyConverterApplication
+import com.example.currencyconverter.domain.Repository
 import com.example.currencyconverter.ui.converter.CurrencyConverterViewModelFactory
 import com.example.currencyconverter.ui.converter.screens.ConverterScreen
 import com.example.currencyconverter.ui.currencies.CurrencyListViewModelFactory
@@ -26,10 +27,10 @@ sealed class Screen(val route: String) {
 @ExperimentalMaterialApi
 @Composable
 fun CurrencyConverterAppNavigation(
-    application: CurrencyConverterApplication
+    repository: Repository
 ) {
+
     val navController = rememberNavController()
-    val repository = application.currencyRepository
 
     NavHost(navController, startDestination = Screen.CurrencyList.route) {
         composable(route = Screen.CurrencyList.route) {

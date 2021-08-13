@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
-                CurrencyConverterAppNavigation(application)
+                CurrencyConverterAppNavigation(application.currencyRepository)
 
             }
         }
