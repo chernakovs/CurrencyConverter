@@ -1,15 +1,12 @@
 package com.example.currencyconverter
 
 import android.app.Application
-import com.example.currencyconverter.domain.repository.CurrencyRepository
+import com.example.currencyconverter.domain.repository.RepositoryImpl
 import com.example.currencyconverter.di.ServiceLocator
 
 class CurrencyConverterApplication : Application() {
 
-    val currencyRepository: CurrencyRepository
+    val currencyRepository: RepositoryImpl
         get() = ServiceLocator.provideCurrencyRepository(this)
 
-    override fun onCreate() {
-        super.onCreate()
-    }
 }

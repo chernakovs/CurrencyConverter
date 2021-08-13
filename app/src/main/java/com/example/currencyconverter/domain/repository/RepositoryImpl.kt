@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
-class CurrencyRepository(
+class RepositoryImpl(
     private val database: AppDatabaseDao,
     private val apiService: CurrencyApi,
     private val databaseMapper: CurrencyDatabaseMapper,

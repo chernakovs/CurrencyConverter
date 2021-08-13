@@ -4,7 +4,7 @@ import android.content.Context
 import com.example.currencyconverter.data.database.AppDatabase
 import com.example.currencyconverter.data.database.AppDatabaseDao
 import com.example.currencyconverter.data.network.NetworkService
-import com.example.currencyconverter.domain.repository.CurrencyRepository
+import com.example.currencyconverter.domain.repository.RepositoryImpl
 import com.example.currencyconverter.mappers.CurrencyDatabaseMapper
 import com.example.currencyconverter.mappers.CurrencyDomainMapper
 import com.example.currencyconverter.mappers.CurrencyNetworkMapper
@@ -14,14 +14,14 @@ object ServiceLocator {
 
     private var valueInputValidator: ValueInputValidator? = null
 
-    private var currencyRepository: CurrencyRepository? = null
+    private var currencyRepository: RepositoryImpl? = null
 
-    fun provideCurrencyRepository(context: Context): CurrencyRepository {
+    fun provideCurrencyRepository(context: Context): RepositoryImpl {
         return currencyRepository ?: createCurrencyRepository(context)
     }
 
-    private fun createCurrencyRepository(context: Context): CurrencyRepository {
-        val repository = CurrencyRepository(
+    private fun createCurrencyRepository(context: Context): RepositoryImpl {
+        val repository = RepositoryImpl(
             provideDatabaseDao(context),
             NetworkService().getCurrencyApi(),
             CurrencyDatabaseMapper(),
