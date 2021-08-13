@@ -4,17 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.currencyconverter.domain.Repository
 import com.example.currencyconverter.di.ServiceLocator
+import com.example.currencyconverter.ui.converter.utils.ValueInputValidator
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import okio.IOException
 
 class CurrencyConverterViewModel(
     private val repository: Repository,
+    private val validator: ValueInputValidator,
     private val currencyAcronym: String
 ) : ViewModel() {
-
-
-    private val validator = ServiceLocator.provideValueInputValidator()
 
 
     private val _networkError = MutableStateFlow(false)

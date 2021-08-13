@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.currencyconverter.CurrencyConverterApplication
+import com.example.currencyconverter.di.ServiceLocator
 import com.example.currencyconverter.domain.Repository
 import com.example.currencyconverter.ui.converter.CurrencyConverterViewModelFactory
 import com.example.currencyconverter.ui.converter.screens.ConverterScreen
@@ -48,6 +49,7 @@ fun CurrencyConverterAppNavigation(
                 viewModel(
                     factory = CurrencyConverterViewModelFactory(
                         repository = repository,
+                        validator = ServiceLocator.provideValueInputValidator(),
                         currencyAcronym = currencyAcronym
                     )
                 )
