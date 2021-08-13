@@ -2,6 +2,7 @@ package com.example.currencyconverter.di
 
 import android.content.Context
 import com.example.currencyconverter.data.database.AppDatabase
+import com.example.currencyconverter.data.database.AppDatabaseDao
 import com.example.currencyconverter.data.network.NetworkService
 import com.example.currencyconverter.domain.repository.CurrencyRepository
 import com.example.currencyconverter.mappers.CurrencyDatabaseMapper
@@ -10,24 +11,6 @@ import com.example.currencyconverter.mappers.CurrencyNetworkMapper
 import com.example.currencyconverter.ui.converter.utils.ValueInputValidator
 
 object ServiceLocator {
-
-    private var database: AppDatabase? = null
-
-    private val networkService by lazy {
-        NetworkService()
-    }
-
-    private val domainMapper by lazy {
-        CurrencyDomainMapper()
-    }
-
-    private val networkMapper by lazy {
-        CurrencyNetworkMapper()
-    }
-
-    private val databaseMapper by lazy {
-        CurrencyDatabaseMapper()
-    }
 
     private var valueInputValidator: ValueInputValidator? = null
 
@@ -38,22 +21,19 @@ object ServiceLocator {
     }
 
     private fun createCurrencyRepository(context: Context): CurrencyRepository {
-        val database = database ?: createDatabase(context)
         val repository = CurrencyRepository(
-            database.databaseDao,
-            networkService.getCurrencyApi(),
-            databaseMapper,
-            networkMapper,
-            domainMapper
+            provideDatabaseDao(context),
+            NetworkService().getCurrencyApi(),
+            CurrencyDatabaseMapper(),
+            CurrencyNetworkMapper(),
+            CurrencyDomainMapper()
         )
         currencyRepository = repository
         return repository
     }
 
-    private fun createDatabase(context: Context): AppDatabase {
-        val result = AppDatabase.getInstance(context)
-        database = result
-        return result
+    private fun provideDatabaseDao(context: Context): AppDatabaseDao {
+        return AppDatabase.getInstance(context).databaseDao
     }
 
     fun provideValueInputValidator(): ValueInputValidator {
