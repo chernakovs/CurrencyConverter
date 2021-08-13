@@ -3,7 +3,7 @@ package com.example.currencyconverter.ui.converter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.currencyconverter.domain.Repository
-import com.example.currencyconverter.ui.di.ServiceLocator
+import com.example.currencyconverter.di.ServiceLocator
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import okio.IOException

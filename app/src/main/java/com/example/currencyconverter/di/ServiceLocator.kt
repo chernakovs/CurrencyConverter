@@ -1,4 +1,4 @@
-package com.example.currencyconverter.ui.di
+package com.example.currencyconverter.di
 
 import android.content.Context
 import com.example.currencyconverter.data.database.AppDatabase
@@ -28,7 +28,6 @@ object ServiceLocator {
     private val databaseMapper by lazy {
         CurrencyDatabaseMapper()
     }
-
 
     private var valueInputValidator: ValueInputValidator? = null
 
@@ -61,7 +60,7 @@ object ServiceLocator {
         return valueInputValidator ?: createValueInputValidator()
     }
 
-    private fun createValueInputValidator() : ValueInputValidator {
+    private fun createValueInputValidator(): ValueInputValidator {
         val validator = ValueInputValidator()
         valueInputValidator = validator
         return validator
