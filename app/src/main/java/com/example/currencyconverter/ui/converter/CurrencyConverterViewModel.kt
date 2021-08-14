@@ -3,19 +3,23 @@ package com.example.currencyconverter.ui.converter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.currencyconverter.domain.Repository
-import com.example.currencyconverter.ui.di.ServiceLocator
+import com.example.currencyconverter.domain.model.Currency
+import com.example.currencyconverter.domain.model.CurrencyRates
+import com.example.currencyconverter.ui.converter.utils.ValueInputValidator
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import okio.IOException
 
 class CurrencyConverterViewModel(
     private val repository: Repository,
-    private val currencyAcronym: String
+    private val validator: ValueInputValidator,
 ) : ViewModel() {
 
+    lateinit var baseCurrency: Flow<Currency>
 
-    private val validator = ServiceLocator.provideValueInputValidator()
+    lateinit var latestUpdateDate: Flow<String>
 
+    lateinit var rates: Flow<List<CurrencyRates>>
 
     private val _networkError = MutableStateFlow(false)
     val networkError: StateFlow<Boolean> = _networkError
@@ -33,30 +37,10 @@ class CurrencyConverterViewModel(
     val searchQuery: StateFlow<String> = _searchQuery
 
 
-    val baseCurrency = repository.getCurrency(currencyAcronym)
-
-    val latestUpdateDate = repository.getBaseCurrencyLatestUpdateDate(currencyAcronym)
-
-    val rates = repository.getRatesByBaseAcronym(currencyAcronym)
-        .combine(searchQuery) { rates, query ->
-            rates.filter {
-                it.currencyAcronym.contains(
-                    query,
-                    true
-                )
-            }
-        }
-        .combine(totalValue) { rates, value -> rates.onEach { it.totalValue = it.cost * value } }
-
-
-    init {
-        refreshDataFromRepository()
-    }
-
-    private fun refreshDataFromRepository() {
+    private fun refreshDataFromRepository(acronym: String) {
         viewModelScope.launch {
             try {
-                repository.refreshCurrencyRates(currencyAcronym)
+                repository.refreshCurrencyRates(acronym)
             } catch (networkError: IOException) {
                 _networkError.value = true
             }
@@ -76,6 +60,26 @@ class CurrencyConverterViewModel(
 
     fun setSearchQuery(query: String) {
         _searchQuery.value = query
+    }
+
+    fun setBaseCurrencyAndRates(acronym: String) {
+
+        baseCurrency = repository.getCurrency(acronym)
+
+        latestUpdateDate = repository.getBaseCurrencyLatestUpdateDate(acronym)
+
+        rates = repository.getRatesByBaseAcronym(acronym)
+            .combine(searchQuery) { rates, query ->
+                rates.filter {
+                    it.currencyAcronym.contains(
+                        query,
+                        true
+                    )
+                }
+            }
+            .combine(totalValue) { rates, value -> rates.onEach { it.totalValue = it.cost * value } }
+
+        refreshDataFromRepository(acronym)
     }
 
 }

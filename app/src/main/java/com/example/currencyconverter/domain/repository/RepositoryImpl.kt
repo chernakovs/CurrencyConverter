@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
-class CurrencyRepository(
+class RepositoryImpl(
     private val database: AppDatabaseDao,
     private val apiService: CurrencyApi,
     private val databaseMapper: CurrencyDatabaseMapper,
@@ -58,27 +58,30 @@ class CurrencyRepository(
             val currencyRates = apiService.getRates(acronym)
 
             currencyRates.rates.map {
+                insertRateToDatabase(
+                    getCurrencyPairId(currencyRates.base, it.currency),
+                    it.cost,
+                    currencyRates.date
+                )
+            }
+        }
+    }
 
-                val pairId = database.getCurrencyPairByAcronyms(currencyRates.base, it.currency)?.id
-                    ?: database.insertCurrencyPair(
-                        domainMapper.currencyPairMapToDatabase(
-                            CurrencyPair(
-                                baseCurrencyAcronym = currencyRates.base,
-                                currencyAcronym = it.currency
-                            )
-                        )
-                    )
 
-                database.insertRate(
-                    domainMapper.toDatabaseRate(
-                        pairId,
-                        it.cost,
-                        currencyRates.date
+
+    private suspend fun getCurrencyPairId(baseCurrencyAcronym: String, currencyAcronym: String): Long {
+        return database.getCurrencyPairByAcronyms(baseCurrencyAcronym, currencyAcronym)?.id
+            ?: database.insertCurrencyPair(
+                domainMapper.currencyPairMapToDatabase(
+                    CurrencyPair(
+                        baseCurrencyAcronym = baseCurrencyAcronym,
+                        currencyAcronym = currencyAcronym
                     )
                 )
+            )
+    }
 
-            }
-
-        }
+    private suspend fun insertRateToDatabase(pairId: Long, cost: Double, date: String) {
+        database.insertRate(domainMapper.toDatabaseRate(pairId, cost, date))
     }
 }
